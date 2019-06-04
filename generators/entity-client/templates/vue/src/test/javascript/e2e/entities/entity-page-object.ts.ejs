@@ -69,7 +69,7 @@ export default class <%= entityClass %>ComponentsPage {
   }
 
   async countDeleteButtons() {
-    return await getDeleteButtons().length;
+    return await this.getDeleteButtons().length;
   }
 
   async getTitle() {
