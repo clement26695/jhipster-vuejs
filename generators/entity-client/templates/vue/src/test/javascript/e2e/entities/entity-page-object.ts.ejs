@@ -69,7 +69,9 @@ export default class <%= entityClass %>ComponentsPage {
   }
 
   async countDeleteButtons() {
-    return await this.getDeleteButtons().length;
+    const deleteButtons = await element.all(by.css('div table .btn-danger'));
+    console.log(JSON.stringify(deleteButtons, null, 2))
+    return deleteButtons.length;
   }
 
   async getTitle() {
