@@ -4,6 +4,7 @@ const writeFiles = require('./files').writeFiles;
 
 module.exports = class extends EntityClientGenerator {
     constructor(args, opts) {
+        opts.context.cypressTests = true;
         super(args, Object.assign({ fromBlueprint: true }, opts)); // fromBlueprint variable is important
     }
 

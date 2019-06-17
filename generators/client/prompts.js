@@ -33,3 +33,35 @@ function askForClient(meta) {
         done();
     });
 }
+
+function askForTestOpts(meta) {
+    if (!meta && this.existingProject) return;
+
+    const choices = [];
+    const defaultChoice = [];
+    if (meta || !this.skipServer) {
+        // all server side test frameworks should be added here
+        choices.push({ name: 'Gatling', value: 'gatling' }, { name: 'Cucumber', value: 'cucumber' });
+    }
+    if (meta || !this.skipClient) {
+        // all client side test frameworks should be added here
+        choices.push({ name: 'Protractor', value: 'protractor' }, { name: 'Cypress', value: 'cypress' });
+    }
+    const PROMPT = {
+        type: 'checkbox',
+        name: 'testFrameworks',
+        message: 'Besides JUnit and Jest, which testing frameworks would you like to use?',
+        choices,
+        default: defaultChoice
+    };
+
+    if (meta) return PROMPT; // eslint-disable-line consistent-return
+
+    const done = this.async();
+
+    this.prompt(PROMPT).then(prompt => {
+        this.testFrameworks = prompt.testFrameworks;
+        done();
+    });
+}
+

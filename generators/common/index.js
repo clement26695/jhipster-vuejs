@@ -31,8 +31,13 @@ module.exports = class extends CommonGenerator {
     }
 
     get default() {
-        // Here we are not overriding this phase and hence its being handled by JHipster
-        return super._default();
+        const phaseFromJHipster = super._default();
+        const myCustomPhaseSteps = {
+            addContext() {
+                this.cypressTests = this.testFrameworks.includes('cypress');
+            }
+        };
+        return Object.assign(phaseFromJHipster, myCustomPhaseSteps);
     }
 
     get writing() {
