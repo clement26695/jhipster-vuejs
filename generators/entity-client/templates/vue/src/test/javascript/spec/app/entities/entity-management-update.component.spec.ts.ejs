@@ -98,7 +98,17 @@ describe('Component Tests', () => {
     describe('save', () => {
       it('Should call update service on save for existing entity', async () => {
         // GIVEN
-        const entity = {id:<%- tsKeyId %>};
+        const entity = {
+          id:<%- tsKeyId %>
+          <%_
+          for (idx in relationships) {
+            const otherEntityNamePlural = relationships[idx].otherEntityNamePlural;
+            if (relationships[idx].relationshipType === 'many-to-many' && relationships[idx].ownerSide === true) {
+              const relationshipFieldNamePlural = relationships[idx].relationshipFieldNamePlural;
+          _%>,
+          <%= relationshipFieldNamePlural %>: []
+          <%_ } } _%>
+        };
         comp.<%= entityInstance %> = entity;
         <%= entityInstance %>ServiceStub.update.resolves(entity);
 
@@ -113,7 +123,16 @@ describe('Component Tests', () => {
 
       it('Should call create service on save for new entity', async () => {
         // GIVEN
-        const entity = {};
+        const entity = {
+          <%_
+          for (idx in relationships) {
+            const otherEntityNamePlural = relationships[idx].otherEntityNamePlural;
+            if (relationships[idx].relationshipType === 'many-to-many' && relationships[idx].ownerSide === true) {
+              const relationshipFieldNamePlural = relationships[idx].relationshipFieldNamePlural;
+            _%>
+            <%= relationshipFieldNamePlural %>: [],
+          <%_ } } _%>
+        };
         comp.<%= entityInstance %> = entity;
         <%= entityInstance %>ServiceStub.create.resolves(entity);
 
