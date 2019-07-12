@@ -67,7 +67,7 @@
             "uz-Latn-uz",
             "vi"
         ],
-        "testFrameworks": ["cypress"],
+        "testFrameworks": [],
         "jhiPrefix": "jhi",
         "clientPackageManager": "npm",
         "nativeLanguage": "en",
@@ -76,6 +76,7 @@
     },
     "generator-jhipster-vuejs": {
         "applicationType": "monolith",
+        "e2eTestsFramework": ["cypress"],
         "baseName": "jhipster",
         "clientFramework": "vue",
         "clientTheme": "none",

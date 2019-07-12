@@ -26,7 +26,7 @@
       "languages": [
         "en"
       ],
-      "testFrameworks": ["cypress"],
+      "testFrameworks": [],
       "jhiPrefix": "jhi",
       "clientPackageManager": "npm",
       "nativeLanguage": "en",
@@ -34,6 +34,7 @@
       "clientFramework": "vue"
     },
     "generator-jhipster-vuejs": {
+      "e2eTestsFramework": ["cypress"],
       "applicationType": "monolith",
       "baseName": "travisWebsocket",
       "clientFramework": "vue",

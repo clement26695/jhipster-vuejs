@@ -26,15 +26,14 @@
     "languages": [
       "en"
     ],
-    "testFrameworks": [
-      "cypress"
-    ],
+    "testFrameworks": [],
     "jhiPrefix": "jhi",
     "clientPackageManager": "npm",
     "nativeLanguage": "en",
     "blueprint": "generator-jhipster-vuejs"
   },
   "generator-jhipster-vuejs": {
+    "e2eTestsFramework": ["cypress"],
     "jhipsterVersion": "5.5.0",
     "applicationType": "gateway",
     "baseName": "test2",
