@@ -405,27 +405,34 @@ const vueFiles = {
             condition: generator => generator.e2eTestsFramework.includes('cypress'),
             path: TEST_SRC_DIR,
             templates: [
-                'cypress/integration/e2e/modules/account/login.spec.ts',
-                'cypress/integration/e2e/modules/administration/administration.spec.ts',
-                'cypress/integration/e2e/util/utils.ts',
-                'cypress/integration/e2e/page-objects/base-component.ts',
-                'cypress/integration/e2e/page-objects/navbar-page.ts',
-                'cypress/integration/e2e/page-objects/signin-page.ts',
+                'cypress/tsconfig.json',
                 'cypress/plugins/index.js',
-                'cypress/support/index.js',
-                'cypress/support/commands.ts',
+                'cypress/specs/account/login.spec.ts',
+                'cypress/specs/administration/administration.spec.ts',
+                'cypress/support/page-objects/login-page.ts',
+                'cypress/support/index.ts',
+                'cypress/support/authentication.ts',
+                'cypress/support/navbar.ts',
+                'cypress/support/utils.ts',
                 // TODO: conditional adding
                 'cypress/fixtures/integration-test.png'
             ]
         },
         {
-            condition: generator => generator.e2eTestsFramework.includes('cypress') && generator.authenticationType !== 'oauth2',
+            condition: generator => generator.e2eTestsFramework.includes('cypress') && !generator.skipUserManagement,
             path: TEST_SRC_DIR,
             templates: [
-                'cypress/integration/e2e/modules/account/account.spec.ts',
-                'cypress/integration/e2e/page-objects/password-page.ts',
-                'cypress/integration/e2e/page-objects/settings-page.ts',
-                'cypress/integration/e2e/page-objects/register-page.ts'
+                'cypress/specs/account/password-page.spec.ts',
+                'cypress/specs/account/register.spec.ts',
+                'cypress/specs/account/settings-page.spec.ts',
+                'cypress/specs/account/user-management/user-management.spec.ts',
+                'cypress/specs/account/user-management/user-management-details.spec.ts',
+                'cypress/specs/account/user-management/user-management-edit.spec.ts',
+                'cypress/support/page-objects/password-page.ts',
+                'cypress/support/page-objects/register-page.ts',
+                'cypress/support/page-objects/settings-page.ts',
+                'cypress/support/page-objects/user-management-page.ts',
+                'cypress/support/users.ts'
             ]
         }
     ]

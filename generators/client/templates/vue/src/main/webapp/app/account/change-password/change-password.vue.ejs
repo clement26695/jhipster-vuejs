@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div data-e2e-container="password-page">
         <div class="row justify-content-center">
             <div class="col-md-8 toastify-container">
                 <h2 v-if="account" id="password-title"><span v-html="$t('password.title', { 'username': username})">Password for [<b>{{username}}</b>]</span></h2>
@@ -19,7 +19,7 @@
 
                     <div class="form-group">
                         <label class="form-control-label" for="currentPassword" v-text="$t('global.form[\'currentpassword.label\']')">Current password</label>
-                        <input type="password" class="form-control" id="currentPassword" name="currentPassword"
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" data-e2e-element="current-password"
                                :class="{'valid': !$v.resetPassword.currentPassword.$invalid, 'invalid': $v.resetPassword.currentPassword.$invalid }"
                                v-bind:placeholder="$t('global.form[\'currentpassword.placeholder\']')"
                                v-model="$v.resetPassword.currentPassword.$model" required>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-control-label" for="newPassword" v-text="$t('global.form.newpassword')">New password</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword"
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" data-e2e-element="new-password"
                                v-bind:placeholder="$t('global.form[\'newpassword.placeholder\']')"
                                :class="{'valid': !$v.resetPassword.newPassword.$invalid, 'invalid': $v.resetPassword.newPassword.$invalid }"
                                v-model="$v.resetPassword.newPassword.$model" minlength=4 maxlength=50 required>
@@ -54,7 +54,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-control-label" for="confirmPassword" v-text="$t('global.form[\'confirmpassword.label\']')">New password confirmation</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" data-e2e-element="confirmation-password"
                                :class="{'valid': !$v.resetPassword.confirmPassword.$invalid, 'invalid': $v.resetPassword.confirmPassword.$invalid }"
                                v-bind:placeholder="$t('global.form[\'confirmpassword.placeholder\']')"
                                v-model="$v.resetPassword.confirmPassword.$model" minlength=4 maxlength=50 required>
@@ -74,7 +74,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" :disabled="$v.resetPassword.$invalid" class="btn btn-primary" v-text="$t('password.form.button')">Save</button>
+                    <button type="submit" :disabled="$v.resetPassword.$invalid" class="btn btn-primary" v-text="$t('password.form.button')" data-e2e-element="submit">Save</button>
                 </form>
             </div>
         </div>

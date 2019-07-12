@@ -9,8 +9,8 @@
         <router-view></router-view>
       </div>
       <%_ if (authenticationType !== 'oauth2') { _%>
-      <b-modal id="login-page" hide-footer lazy>
-        <span slot="modal-title" id="login-title" v-text="$t('login.title')">Sign in</span>
+      <b-modal id="login-page" hide-footer lazy data-e2e-container="login-modal">
+        <span slot="modal-title" id="login-title" v-text="$t('login.title')" data-e2e-element="title">Sign in</span>
         <login-form></login-form>
       </b-modal>
       <%_ } %>

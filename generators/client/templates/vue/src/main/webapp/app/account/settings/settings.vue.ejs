@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div data-e2e-container="settings-page">
         <div class="row justify-content-center">
             <div class="col-md-8 toastify-container">
                 <h2 v-if="username" id="settings-title"><span v-bind:value="$t('settings.title')">User settings for [<b>{{username}}</b>]</span></h2>
@@ -20,7 +20,8 @@
                         <label class="form-control-label" for="firstName" v-text="$t('settings.form.firstname')">First Name</label>
                         <input type="text" class="form-control" id="firstName" name="firstName" v-bind:placeholder="$t('settings.form[\'firstname.placeholder\']')"
                                :class="{'valid': !$v.settingsAccount.firstName.$invalid, 'invalid': $v.settingsAccount.firstName.$invalid }"
-                               v-model="$v.settingsAccount.firstName.$model" minlength=1 maxlength=50 required>
+                               v-model="$v.settingsAccount.firstName.$model" minlength=1 maxlength=50 required
+                               data-e2e-element="first-name">
                         <div v-if="$v.settingsAccount.firstName.$anyDirty && $v.settingsAccount.firstName.$invalid">
                             <small class="form-text text-danger"
                                    v-if="!$v.settingsAccount.firstName.required" v-text="$t('settings.messages.validate.firstname.required')">
@@ -40,7 +41,8 @@
                         <label class="form-control-label" for="lastName" v-text="$t('settings.form.lastname')">Last Name</label>
                         <input type="text" class="form-control" id="lastName" name="lastName" v-bind:placeholder="$t('settings.form[\'lastname.placeholder\']')"
                                :class="{'valid': !$v.settingsAccount.lastName.$invalid, 'invalid': $v.settingsAccount.lastName.$invalid }"
-                               v-model="$v.settingsAccount.lastName.$model" minlength=1 maxlength=50 required>
+                               v-model="$v.settingsAccount.lastName.$model" minlength=1 maxlength=50 required
+                               data-e2e-element="last-name">
                         <div v-if="$v.settingsAccount.lastName.$anyDirty && $v.settingsAccount.lastName.$invalid">
                             <small class="form-text text-danger"
                                    v-if="!$v.settingsAccount.lastName.required" v-text="$t('settings.messages.validate.lastname.required')">
@@ -60,7 +62,8 @@
                         <label class="form-control-label" for="email" v-text="$t('global.form[\'email.label\']')">Email</label>
                         <input type="email" class="form-control" id="email" name="email" v-bind:placeholder="$t('global.form[\'email.placeholder\']')"
                                :class="{'valid': !$v.settingsAccount.email.$invalid, 'invalid': $v.settingsAccount.email.$invalid }"
-                               v-model="$v.settingsAccount.email.$model" minlength="5" maxlength="254" email required>
+                               v-model="$v.settingsAccount.email.$model" minlength="5" maxlength="254" email required
+                               data-e2e-element="email">
                         <div v-if="$v.settingsAccount.email.$anyDirty && $v.settingsAccount.email.$invalid">
                             <small class="form-text text-danger" v-if="!$v.settingsAccount.email.required"
                                    v-text="$t('global.messages.validate.email.required')">
@@ -86,7 +89,14 @@
                             <option v-for="(language, key) in languages" :value="key" :key="`lang-${key}`">{{language.name}}</option>
                         </select>
                     </div>
-                    <button type="submit" :disabled="$v.settingsAccount.$invalid" class="btn btn-primary" v-text="$t('settings.form.button')">Save</button>
+                    <button
+                        type="submit"
+                        :disabled="$v.settingsAccount.$invalid"
+                        class="btn btn-primary"
+                        v-text="$t('settings.form.button')"
+                        data-e2e-element="submit">
+                        Save
+                    </button>
                 </form>
             </div>
         </div>

@@ -119,21 +119,14 @@ const vueFiles = {
             path: CLIENT_TEST_SRC_DIR,
             templates: [
                 {
-                    file: 'cypress/integration/e2e/entities/entity-page-object.ts',
-                    renameTo: generator => `cypress/integration/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}.page-object.ts`
+                    file: 'cypress/specs/entities/entity.spec.ts',
+                    renameTo: generator => `cypress/specs/entities/${generator.entityFileName}.spec.ts`
                 },
                 {
-                    file: 'cypress/integration/e2e/entities/entity.spec.ts',
-                    renameTo: generator => `cypress/integration/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}.spec.ts`
+                    file: 'cypress/support/page-objects/entities/entity-pages.ts',
+                    renameTo: generator => `cypress/support/page-objects/entities/${generator.entityFileName}-pages.ts`
                 },
-                {
-                    file: 'cypress/integration/e2e/entities/entity-details-page-object.ts',
-                    renameTo: generator => `cypress/integration/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-details.page-object.ts`
-                },
-                {
-                    file: 'cypress/integration/e2e/entities/entity-update-page-object.ts',
-                    renameTo: generator => `cypress/integration/e2e/entities/${generator.entityFolderName}/${generator.entityFileName}-update.page-object.ts`
-                }
+                'cypress/support/entities.ts'
             ]
         }
     ]

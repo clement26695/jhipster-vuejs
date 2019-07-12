@@ -1,6 +1,12 @@
 import 'cypress-file-upload';
-import './commands';
+import './authentication';
 import './navbar';
+import './utils';
+<%_ if (authenticationType !== 'oauth2') { _%>
+import './users';
+<%_ } _%>
+// TODO: needle for entity ?
+import './entities';
 <%_ if (authenticationType === 'oauth2') { _%>
 
 Cypress.Cookies.defaults({
