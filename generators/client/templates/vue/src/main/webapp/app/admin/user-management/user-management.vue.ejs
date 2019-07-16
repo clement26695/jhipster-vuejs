@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2>
-            <span id="user-management-page-heading" v-text="$t('userManagement.home.title')" data-e2-element="user-management-title">Users</span>
+            <span id="user-management-page-heading" v-text="$t('userManagement.home.title')" data-e2e-element="user-management-title">Users</span>
             <router-link tag="button" class="btn btn-primary float-right jh-create-entity" :to="{name: '<%= jhiPrefixCapitalized %>UserCreate'}">
                 <font-awesome-icon icon="plus"></font-awesome-icon> <span v-text="$t('userManagement.home.createLabel')">Create a new User</span>
             </router-link>

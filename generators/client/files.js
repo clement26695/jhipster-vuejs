@@ -425,13 +425,13 @@ const vueFiles = {
                 'cypress/specs/account/password-page.spec.ts',
                 'cypress/specs/account/register.spec.ts',
                 'cypress/specs/account/settings-page.spec.ts',
-                'cypress/specs/account/user-management/user-management.spec.ts',
-                'cypress/specs/account/user-management/user-management-details.spec.ts',
-                'cypress/specs/account/user-management/user-management-edit.spec.ts',
+                'cypress/specs/administration/user-management/user-management.spec.ts',
+                'cypress/specs/administration/user-management/user-management-details.spec.ts',
+                'cypress/specs/administration/user-management/user-management-edit.spec.ts',
                 'cypress/support/page-objects/password-page.ts',
                 'cypress/support/page-objects/register-page.ts',
                 'cypress/support/page-objects/settings-page.ts',
-                'cypress/support/page-objects/user-management-page.ts',
+                'cypress/support/page-objects/user-management-pages.ts',
                 'cypress/support/users.ts'
             ]
         }

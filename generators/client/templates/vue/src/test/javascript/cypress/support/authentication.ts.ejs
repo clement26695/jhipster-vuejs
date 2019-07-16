@@ -46,7 +46,7 @@ Cypress.Commands.add('loginWithAdmin', () => {
   return cy.loginUsing('admin', 'admin');
 });
 
-<%_ if (authenticationType === 'oauth2') { _%>
+<%_ if (authenticationType !== 'oauth2') { _%>
 Cypress.Commands.add('logout', () => {
   window.sessionStorage.removeItem('jhi-authenticationToken');
   window.localStorage.removeItem('jhi-authenticationToken');

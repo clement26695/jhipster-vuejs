@@ -22,7 +22,7 @@ import {
   userEditEmailSelector,
   userEditPageSelector,
   userEditSaveSelector
-} from '../../../support/page-objects/user-managements-pages';
+} from '../../../support/page-objects/user-management-pages';
 
 describe('User Edit', () => {
   beforeEach(() => {
@@ -38,6 +38,9 @@ describe('User Edit', () => {
     // WHEN
     getUserEditButtonByLogin('user-edit-details').click();
 
+    cy.get(userEditPageSelector)
+      .find(userEditEmailSelector)
+      .should('have.value', 'user-edit-details@localhost.jh');
     cy.get(userEditPageSelector)
       .find(userEditEmailSelector)
       .type('ipster');
