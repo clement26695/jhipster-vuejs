@@ -48,7 +48,7 @@ launchCurlOrProtractor() {
     do
         result=0
         if [[ -f "tsconfig.json" ]]; then
-            npm run e2e:cypress
+            npm run e2e:cypress:headless
         fi
         result=$?
         [ $result -eq 0 ] && break
