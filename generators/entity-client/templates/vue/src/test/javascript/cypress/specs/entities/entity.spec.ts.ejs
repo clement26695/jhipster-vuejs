@@ -60,12 +60,6 @@ describe('<%= entityClass %> e2e test', () => {
   let startingEntitiesCount = 0;
   let entityToDelete: number[] = [];
 
-  <%_ if (fieldsContainBlobOrImage) { _%>
-  before(function() {
-    cy.fixture('integration-test.png').as('imageContent');
-  });
-
-  <%_ } _%>
   beforeEach(function() {
     cy.logout();
     cy.loginWithAdmin().then(() => {
@@ -86,35 +80,10 @@ describe('<%= entityClass %> e2e test', () => {
           startingEntitiesCount = entities.length;
         });
     });
-
-    // TODO: move as a fixture ?
-   cy.wrap({
-    <%_ fields.forEach((field) => {
-      const fieldName = field.fieldName;
-      const fieldType = field.fieldType;
-      const fieldTypeBlobContent = field.fieldTypeBlobContent;
-      const fieldIsEnum = field.fieldIsEnum;
-
-      if (!(fieldIsEnum)) {
-    _%>
-        <%_ if (['Integer', 'Long', 'Float', 'Double', 'BigDecimal', 'Duration'].includes(fieldType)) { _%>
-          '<%= fieldName %>': 5,
-        <%_ } else if (fieldType === 'LocalDate') { _%>
-          '<%= fieldName %>': '2001-01-01',
-        <%_ } else if (['Instant', 'ZonedDateTime'].includes(fieldType)) { _%>
-          '<%= fieldName %>': '2001-01-01T02:30:00:000Z',
-        <%_ } else if (fieldType === 'Boolean') { _%>
-          '<%= fieldName %>': true,
-        <%_ } else if (['byte[]', 'ByteBuffer'].includes(fieldType) && fieldTypeBlobContent !== 'text') { _%>
-          '<%= fieldName %>': this.imageContent,
-          '<%= fieldName %>ContentType': 'image/png',
-        <%_ } else if (fieldType === 'UUID'){ _%>
-          '<%= fieldName %>': '64c99148-3908-465d-8c4a-e510e3ade974',
-        <%_ } else { _%>
-          '<%= fieldName %>': '<%= fieldName %>',
-        <%_ } _%>
-    <%_ }}); _%>
-    }).as('defaultEntityBody');
+<%_ if (fieldsContainBlobOrImage) { _%>
+    cy.fixture('integration-test.png').as('imageContent');
+<%_ } _%>
+    cy.fixture('<%= entityFileName%>-body.json').as('defaultEntityBody');
   });
 
   it('should load <%= entityClassPlural %>', () => {

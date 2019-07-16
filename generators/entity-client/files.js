@@ -119,6 +119,10 @@ const vueFiles = {
             path: CLIENT_TEST_SRC_DIR,
             templates: [
                 {
+                    file: 'cypress/fixtures/entity-body.json',
+                    renameTo: generator => `cypress/fixtures/${generator.entityFileName}-body.json`
+                },
+                {
                     file: 'cypress/specs/entities/entity.spec.ts',
                     renameTo: generator => `cypress/specs/entities/${generator.entityFileName}.spec.ts`
                 },
