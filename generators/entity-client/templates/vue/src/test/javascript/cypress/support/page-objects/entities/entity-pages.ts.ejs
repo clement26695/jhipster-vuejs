@@ -1,24 +1,30 @@
-export const <%= entityFileName %>PageSelector = '[data-e2e-container=<%= entityFileName %>-page]';
-export const <%= entityFileName %>TitleSelector = '[data-e2e-element=<%= entityFileName %>-heading]';
-export const <%= entityFileName %>CreateSelector = '[data-e2e-element=create-entity]';
-export const <%= entityFileName %>DeleteButtonSelector = '[data-e2e-element=delete-button]';
-export const <%= entityFileName %>DetailsButtonSelector = '[data-e2e-element=details-button]';
-export const <%= entityFileName %>EditButtonSelector = '[data-e2e-element=edit-button]';
+export const <%= entityInstance %>PageSelector = '[data-e2e-container=<%= entityFileName %>-page]';
+export const <%= entityInstance %>TitleSelector = '[data-e2e-element=<%= entityFileName %>-heading]';
+export const <%= entityInstance %>CreateSelector = '[data-e2e-element=create-entity]';
+export const <%= entityInstance %>DeleteButtonSelector = '[data-e2e-element=delete-button]';
+export const <%= entityInstance %>DetailsButtonSelector = '[data-e2e-element=details-button]';
+export const <%= entityInstance %>EditButtonSelector = '[data-e2e-element=edit-button]';
 
 // Edit
-export const <%= entityFileName %>EditPageSelector = '[data-e2e-container=<%= entityFileName %>-edit-page]';
-export const <%= entityFileName %>EditSaveSelector = '[data-e2e-element=save]';
-export const <%= entityFileName %>EditTitleSelector = '[data-e2e-element=title]';
-export const <%= entityFileName %>EditNameSelector = '[data-e2e-element=<%= entityFileName %>-name]';
-export const <%= entityFileName %>EditAgeSelector = '[data-e2e-element=<%= entityFileName %>-age]';
+export const <%= entityInstance %>EditPageSelector = '[data-e2e-container=<%= entityFileName %>-edit-page]';
+export const <%= entityInstance %>EditSaveSelector = '[data-e2e-element=save]';
+export const <%= entityInstance %>EditTitleSelector = '[data-e2e-element=title]';
+
+<%_ for (idx in fields) {
+    const fieldName = fields[idx].fieldName;
+    const fieldNameCapitalized = fields[idx].fieldNameCapitalized;
+_%>
+export const <%= entityInstance%>Edit<%= fieldNameCapitalized %>Selector = '[data-e2e-element=<%= entityFileName %>-<%= fieldName %>]';
+<%_ } _%>
+
 
 // Details
-export const <%= entityFileName %>DetailsPageSelector = '[data-e2e-container=<%= entityFileName %>-details-page]';
-export const <%= entityFileName %>DetailsBackSelector = '[data-e2e-element=back]';
-export const <%= entityFileName %>DetailsTitleSelector = '[data-e2e-element=title]';
-export const <%= entityFileName %>DetailsItemSelector = '[data-e2e-element=details-item]';
+export const <%= entityInstance %>DetailsPageSelector = '[data-e2e-container=<%= entityFileName %>-details-page]';
+export const <%= entityInstance %>DetailsBackSelector = '[data-e2e-element=back]';
+export const <%= entityInstance %>DetailsTitleSelector = '[data-e2e-element=title]';
+export const <%= entityInstance %>DetailsItemSelector = '[data-e2e-element=details-item]';
 
 // Delete
-export const <%= entityFileName %>DeleteModalSelector = '[data-e2e-container=<%= entityFileName %>-delete]';
-export const <%= entityFileName %>DeleteConfirmSelector = '[data-e2e-element=confirm]';
-export const <%= entityFileName %>DeleteTitleSelector = '[data-e2e-element=title]';
+export const <%= entityInstance %>DeleteModalSelector = '[data-e2e-container=<%= entityFileName %>-delete]';
+export const <%= entityInstance %>DeleteConfirmSelector = '[data-e2e-element=confirm]';
+export const <%= entityInstance %>DeleteBodySelector = '[data-e2e-element=body]';

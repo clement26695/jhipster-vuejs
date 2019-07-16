@@ -17,29 +17,33 @@
  limitations under the License.
 -%>
 import {
-  <%= entityFileName%>CreateSelector,
-  <%= entityFileName%>DeleteButtonSelector,
-  <%= entityFileName%>DeleteConfirmSelector,
-  <%= entityFileName%>DeleteModalSelector,
-  <%= entityFileName%>DeleteTitleSelector,
-  <%= entityFileName%>DetailsBackSelector,
-  <%= entityFileName%>DetailsButtonSelector,
-  <%= entityFileName%>DetailsItemSelector,
-  <%= entityFileName%>DetailsPageSelector,
-  <%= entityFileName%>DetailsTitleSelector,
-  <%= entityFileName%>EditAgeSelector,
-  <%= entityFileName%>EditButtonSelector,
-  <%= entityFileName%>EditNameSelector,
-  <%= entityFileName%>EditPageSelector,
-  <%= entityFileName%>EditSaveSelector,
-  <%= entityFileName%>EditTitleSelector,
-  <%= entityFileName%>PageSelector,
-  <%= entityFileName%>TitleSelector
-} from '../../support/page-objects/entities/<%= entityFileName%>-page';
-
-<%_ if (fieldsContainBlobOrImage) { _%>
-import path from 'path';
+  <%= entityInstance%>CreateSelector,
+  <%= entityInstance%>DeleteButtonSelector,
+  <%= entityInstance%>DeleteConfirmSelector,
+  <%= entityInstance%>DeleteModalSelector,
+  <%= entityInstance%>DeleteBodySelector,
+  <%= entityInstance%>DetailsBackSelector,
+  <%= entityInstance%>DetailsButtonSelector,
+  <%= entityInstance%>DetailsItemSelector,
+  <%= entityInstance%>DetailsPageSelector,
+  <%= entityInstance%>DetailsTitleSelector,
+  <%= entityInstance%>EditButtonSelector,
+  <%= entityInstance%>EditPageSelector,
+  <%= entityInstance%>EditSaveSelector,
+  <%= entityInstance%>EditTitleSelector,
+<%_ for (idx in fields) {
+  const fieldName = fields[idx].fieldName;
+  const fieldNameCapitalized = fields[idx].fieldNameCapitalized;
+_%>
+  <%= entityInstance%>Edit<%= fieldNameCapitalized %>Selector,
 <%_ } _%>
+  <%= entityInstance%>PageSelector,
+  <%= entityInstance%>TitleSelector
+} from '../../support/page-objects/entities/<%= entityFileName%>-pages';
+
+// TODO: conditionnal adding
+import { datetimeToMinutes } from '../../support/utils';
+
 <%_
 const baseApi = (applicationType === 'gateway' && locals.microserviceName) ? microserviceName.toLowerCase() + '/api/' : 'api/';
 let openBlockComment = ``;
@@ -57,60 +61,91 @@ describe('<%= entityClass %> e2e test', () => {
   let entityToDelete: number[] = [];
 
   <%_ if (fieldsContainBlobOrImage) { _%>
-  before(() => {
+  before(function() {
     cy.fixture('integration-test.png').as('imageContent');
   });
 
   <%_ } _%>
-  beforeEach(() => {
+  beforeEach(function() {
     cy.logout();
-    cy.loginWithAdmin();
+    cy.loginWithAdmin().then(() => {
+      // TODO: to remove if possible
+      cy.wait(100);
+      cy.visit('/entity/<%= entityFileName%>');
 
-    // TODO: Check navgation in navbar
-    cy.visit('/entity/<%= entityFileName%>');
+      // TODO: handle OAuth2
+      cy.request({
+        method: 'GET',
+        url: '/<%= baseApi + entityApiUrl %>',
+        auth: {
+          bearer: window.sessionStorage.getItem('jhi-authenticationToken')
+        }
+      })
+        .its('body')
+        .then(entities => {
+          startingEntitiesCount = entities.length;
+        });
+    });
 
-    // TODO: handle OAuth2
-    cy.request({
-      method: 'GET',
-      url: '/<%= baseApi + entityApiUrl %>',
-      auth: {
-        bearer: window.sessionStorage.getItem('jhi-authenticationToken')
-      }
-    })
-      .its('body')
-      .then(entities => {
-        startingEntitiesCount = entities.length;
-      });
+    // TODO: move as a fixture ?
+   cy.wrap({
+    <%_ fields.forEach((field) => {
+      const fieldName = field.fieldName;
+      const fieldType = field.fieldType;
+      const fieldTypeBlobContent = field.fieldTypeBlobContent;
+      const fieldIsEnum = field.fieldIsEnum;
+
+      if (!(fieldIsEnum)) {
+    _%>
+        <%_ if (['Integer', 'Long', 'Float', 'Double', 'BigDecimal', 'Duration'].includes(fieldType)) { _%>
+          '<%= fieldName %>': 5,
+        <%_ } else if (fieldType === 'LocalDate') { _%>
+          '<%= fieldName %>': '2001-01-01',
+        <%_ } else if (['Instant', 'ZonedDateTime'].includes(fieldType)) { _%>
+          '<%= fieldName %>': '2001-01-01T02:30:00:000Z',
+        <%_ } else if (fieldType === 'Boolean') { _%>
+          '<%= fieldName %>': true,
+        <%_ } else if (['byte[]', 'ByteBuffer'].includes(fieldType) && fieldTypeBlobContent !== 'text') { _%>
+          '<%= fieldName %>': this.imageContent,
+          '<%= fieldName %>ContentType': 'image/png',
+        <%_ } else if (fieldType === 'UUID'){ _%>
+          '<%= fieldName %>': '64c99148-3908-465d-8c4a-e510e3ade974',
+        <%_ } else { _%>
+          '<%= fieldName %>': '<%= fieldName %>',
+        <%_ } _%>
+    <%_ }}); _%>
+    }).as('defaultEntityBody');
   });
 
   it('should load <%= entityClassPlural %>', () => {
-    cy.get(<%= entityFileName%>PageSelector).find(<%= entityFileName%>TitleSelector);
+    cy.get(<%= entityInstance%>PageSelector).find(<%= entityInstance%>TitleSelector);
 
     if (startingEntitiesCount === 0) {
       // TODO: test if message? stub response?
-      cy.get(<%= entityFileName%>PageSelector)
-        .find(<%= entityFileName%>DeleteButtonSelector)
+      cy.get(<%= entityInstance%>PageSelector)
+        .find(<%= entityInstance%>DeleteButtonSelector)
         .should('not.exist');
     } else {
       // TODO: handle pagination?
-      cy.get(<%= entityFileName%>PageSelector)
-        .find(<%= entityFileName%>DeleteButtonSelector)
+      cy.get(<%= entityInstance%>PageSelector)
+        .find(<%= entityInstance%>DeleteButtonSelector)
         .should('have.lengthOf', startingEntitiesCount);
     }
   });
 
-  it('should load create <%= entityClass %> page', () => {
-    cy.get(<%= entityFileName%>PageSelector)
-      .find(<%= entityFileName%>CreateSelector)
+  it('should load create <%= entityClass %> page', function() {
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>CreateSelector)
       .click();
 
-    cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>EditSaveSelector)
+    cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>EditSaveSelector)
       .should('exist');
 
-    cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>EditTitleSelector)
+    cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>EditTitleSelector)
 <%_ if (enableTranslation) { _%>
+      // TODO: to remove ?
       .invoke('attr', 'id')
       .should('match', /<%= i18nKeyPrefix %>.home.createOrEditLabel/);
 <%_ } else { _%>
@@ -118,12 +153,12 @@ describe('<%= entityClass %> e2e test', () => {
 <%_ } _%>
   });
 
-   <%= openBlockComment %>it('should create and save <%= entityClassPlural %>', () => {
+   <%= openBlockComment %>it('should create and save <%= entityClassPlural %>', function() {
     cy.server();
     cy.route('POST', '/<%= baseApi + entityApiUrl %>').as('saveEntityRequest');
 
-    cy.get(<%= entityFileName%>PageSelector)
-      .find(<%= entityFileName%>CreateSelector)
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>CreateSelector)
       .click();
 
     <%_ fields.forEach((field) => {
@@ -133,8 +168,8 @@ describe('<%= entityClass %> e2e test', () => {
       const fieldTypeBlobContent = field.fieldTypeBlobContent;
       const fieldIsEnum = field.fieldIsEnum;
     _%>
-    cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>Edit<%= fieldNameCapitalized %>Selector)
+    cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>Edit<%= fieldNameCapitalized %>Selector)
     <%_ if (['Integer', 'Long', 'Float', 'Double', 'BigDecimal'].includes(fieldType)) { _%>
       .type('5')
       .should('have.value', '5');
@@ -150,7 +185,7 @@ describe('<%= entityClass %> e2e test', () => {
         const currentDateInMinutes = htmlElementInput.value === '' ? 0 : datetimeToMinutes(htmlElementInput.value);
         htmlElementInput.stepUp(datetimeToMinutes('2001-01-01T02:30') - currentDateInMinutes);
       })
-      .trigger('change', {force: true});
+      .trigger('change', {force: true})
       .should('have.value', '2001-01-01T02:30');
 
     <%_ } else if (fieldType === 'Duration') { _%>
@@ -163,8 +198,8 @@ describe('<%= entityClass %> e2e test', () => {
       .should('be.checked');
 
     <%_ } else if (['byte[]', 'ByteBuffer'].includes(fieldType) && fieldTypeBlobContent !== 'text') { _%>
-      .updload(
-        { this.imageContent, 'integration-test.png', 'image/png' },
+      .eq(0).upload(
+        { fileContent: this.imageContent, fileName: 'integration-test.png', mimeType: 'image/png' },
         { subjectType: 'input' },
       );
 
@@ -196,8 +231,8 @@ describe('<%= entityClass %> e2e test', () => {
     <%_ } _%>
     <%_ }); _%>
 
-     cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>EditSaveSelector)
+     cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>EditSaveSelector)
       .click();
 
     cy.wait('@saveEntityRequest')
@@ -207,7 +242,7 @@ describe('<%= entityClass %> e2e test', () => {
         entityToDelete.push(entity.id);
       });
 
-    cy.get(<%= entityFileName%>EditPageSelector).should('not.exist');
+    cy.get(<%= entityInstance%>EditPageSelector).should('not.exist');
 
     // Success toast should appear
     cy.getSuccessToast().should('exist');
@@ -225,15 +260,9 @@ describe('<%= entityClass %> e2e test', () => {
       });
   });<%= closeBlockComment %>
 
-  it('should load details <%= entityClass %> page and fetch data', () => {
+  it('should load details <%= entityClass %> page and fetch data', function() {
     // TODO: fix request body
-    cy.createEntity('<%= entityInstancePlural %>', {
-      age: 0,
-      name: 'test',
-      user: {
-        id: 3
-      }
-    }).then(response => {
+    cy.createEntity('<%= entityApiUrl %>', this.defaultEntityBody).then(response => {
       entityToDelete.push(response.body.id);
     });
     cy.reload();
@@ -242,24 +271,24 @@ describe('<%= entityClass %> e2e test', () => {
     // TODO: fix pagination
     getIdSortButton().click();
     <%_ } _%>
-    cy.get(<%= entityFileName%>PageSelector)
-      .find(<%= entityFileName%>DetailsButtonSelector)
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>DetailsButtonSelector)
       .last()
       .click();
 
-    cy.get(<%= entityFileName%>DetailsPageSelector)
-      .find(<%= entityFileName%>DetailsTitleSelector)
+    cy.get(<%= entityInstance%>DetailsPageSelector)
+      .find(<%= entityInstance%>DetailsTitleSelector)
       .invoke('text')
       .should('not.have.lengthOf', 0);
 
-    cy.get(<%= entityFileName%>DetailsPageSelector)
-      .find(<%= entityFileName%>DetailsItemSelector)
+    cy.get(<%= entityInstance%>DetailsPageSelector)
+      .find(<%= entityInstance%>DetailsItemSelector)
       .first()
       .invoke('text')
       .should('not.have.lengthOf', 0);
 
-    cy.get(<%= entityFileName%>DetailsPageSelector)
-      .find(<%= entityFileName%>DetailsBackSelector)
+    cy.get(<%= entityInstance%>DetailsPageSelector)
+      .find(<%= entityInstance%>DetailsBackSelector)
       .click();
 
     cy.request({
@@ -275,15 +304,9 @@ describe('<%= entityClass %> e2e test', () => {
       });
   });
 
-  it('should load edit <%= entityClass %> page and fetch data', () => {
+  it('should load edit <%= entityClass %> page and fetch data', function() {
     // TODO: fix body
-    cy.createEntity('<%= entityInstancePlural %>', {
-      age: 0,
-      name: 'test',
-      user: {
-        id: 3
-      }
-    }).then(response => {
+    cy.createEntity('<%= entityApiUrl %>', this.defaultEntityBody).then(response => {
       entityToDelete.push(response.body.id);
     });
     cy.reload();
@@ -291,13 +314,13 @@ describe('<%= entityClass %> e2e test', () => {
     <%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
     getIdSortButton().click();
     <%_ } _%>
-    cy.get(<%= entityFileName%>PageSelector)
-      .find(<%= entityFileName%>EditButtonSelector)
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>EditButtonSelector)
       .last()
       .click();
 
-    cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>EditTitleSelector)
+    cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>EditTitleSelector)
       .invoke('text')
       .should('not.have.lengthOf', 0);
 
@@ -307,8 +330,8 @@ describe('<%= entityClass %> e2e test', () => {
       const fieldTypeBlobContent = field.fieldTypeBlobContent;
       const fieldIsEnum = field.fieldIsEnum;
     _%>
-    cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>Edit<%= fieldNameCapitalized %>Selector)
+    cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>Edit<%= fieldNameCapitalized %>Selector)
     <%_ if (['Integer', 'Long', 'Float', 'Double', 'BigDecimal'].includes(fieldType)) { _%>
       .clear()
       .type('6')
@@ -326,7 +349,7 @@ describe('<%= entityClass %> e2e test', () => {
         const currentDateInMinutes = htmlElementInput.value === '' ? 0 : datetimeToMinutes(htmlElementInput.value);
         htmlElementInput.stepUp(datetimeToMinutes('2019-01-01T02:30') - currentDateInMinutes);
       })
-      .trigger('change', {force: true});
+      .trigger('change', {force: true})
       .should('have.value', '2019-01-01T02:30');
 
     <%_ } else if (fieldType === 'Duration') { _%>
@@ -354,25 +377,19 @@ describe('<%= entityClass %> e2e test', () => {
     <%_ } _%>
     <%_ }); _%>
 
-    cy.get(<%= entityFileName%>EditPageSelector)
-      .find(<%= entityFileName%>EditSaveSelector)
+    cy.get(<%= entityInstance%>EditPageSelector)
+      .find(<%= entityInstance%>EditSaveSelector)
       .click();
 
-    cy.get(<%= entityFileName%>EditPageSelector).should('not.exist');
+    cy.get(<%= entityInstance%>EditPageSelector).should('not.exist');
 
     // Info toast should appear
     cy.getInfoToast().should('exist');
   });
 
-  <%= openBlockComment %>it('should delete last <%= entityClass %>', () => {
+  <%= openBlockComment %>it('should delete last <%= entityClass %>', function() {
     // TODO: fix body
-    cy.createEntity('<%= entityInstancePlural %>', {
-      age: 0,
-      name: 'test',
-      user: {
-        id: 3
-      }
-    }).then(response => {
+    cy.createEntity('<%= entityApiUrl %>', this.defaultEntityBody).then(response => {
       entityToDelete.push(response.body.id);
     });
     cy.reload();
@@ -380,24 +397,22 @@ describe('<%= entityClass %> e2e test', () => {
     <%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
     getIdSortButton().click();
     <%_ } _%>
-    cy.get(<%= entityFileName%>PageSelector)
-      .find(<%= entityFileName%>DeleteButtonSelector)
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>DeleteButtonSelector)
       .last()
       .click();
 
-     cy.get(<%= entityFileName%>DeleteModalSelector)
-      .find(<%= entityFileName%>DeleteTitleSelector)
-      .should('be.visible');
-      .invoke('attr', 'id')
-      .should('match', /jhi-delete-<%= entityFileName%>-heading/);
+     cy.get(<%= entityInstance%>DeleteModalSelector)
+      .find(<%= entityInstance%>DeleteBodySelector)
+      .should('be.visible')
 
-    cy.get(<%= entityFileName%>DeleteModalSelector)
-      .find(<%= entityFileName%>DeleteConfirmSelector)
+    cy.get(<%= entityInstance%>DeleteModalSelector)
+      .find(<%= entityInstance%>DeleteConfirmSelector)
       .click();
 
     // Delete modal should disappear
-    cy.get(<%= entityFileName%>DeleteModalSelector)
-      .find(<%= entityFileName%>DeleteTitleSelector)
+    cy.get(<%= entityInstance%>DeleteModalSelector)
+      .find(<%= entityInstance%>DeleteBodySelector)
       .should('not.be.visible');
 
     cy.request({
@@ -417,8 +432,8 @@ describe('<%= entityClass %> e2e test', () => {
     cy.getDangerToast().should('exist');
   });<%= closeBlockComment %>
 
-  after(() => {
-    cy.cleanEntity('<%= entityInstancePlural %>', entityToDelete);
+  afterEach(() => {
+    cy.cleanEntity('<%= entityApiUrl %>', entityToDelete);
     entityToDelete = [];
   });
 });

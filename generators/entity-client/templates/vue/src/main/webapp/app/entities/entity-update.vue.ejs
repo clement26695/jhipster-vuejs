@@ -40,7 +40,14 @@
                     <div class="form-group">
                         <label class="form-control-label" v-text="$t('<%= translationKey %>')" for="<%= entityFileName %>-<%= fieldName %>"><%= fieldNameHumanized %></label>
                         <%_ if (fields[idx].fieldIsEnum) { _%>
-                        <select class="form-control" name="<%= fieldName %>" :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }" v-model="$v.<%= entityInstance %>.<%= fieldName %>.$model" id="<%= entityFileName %>-<%= fieldName %>" <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %>>
+                        <select
+                            class="form-control"
+                            name="<%= fieldName %>"
+                            :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
+                            v-model="$v.<%= entityInstance %>.<%= fieldName %>.$model"
+                            id="<%= entityFileName %>-<%= fieldName %>"
+                            data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
+                            <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %>>
                         <%_ const enumPrefix = angularAppName + '.'+ fieldType;
                             const values = fields[idx].fieldValues.replace(/\s/g, '').split(',');
                             for (key in values) {
@@ -70,33 +77,54 @@
                                     <font-awesome-icon icon="times"></font-awesome-icon>
                                 </button>
                             </div>
-                            <input type="file" ref="file_<%= fieldName %>" id="file_<%= fieldName %>" v-on:change="setFileData($event, <%= entityInstance %>, '<%= fieldName %>', <% if (fieldTypeBlobContent === 'image') { %>true)" accept="image/*" v-text="$t('entity.action.addimage')"<% } else { %>false)" v-text="$t('entity.action.addblob')"<% } %>/>
+                            <input
+                                type="file"
+                                ref="file_<%= fieldName %>"
+                                id="file_<%= fieldName %>"
+                                data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
+                                v-on:change="setFileData($event, <%= entityInstance %>, '<%= fieldName %>', <% if (fieldTypeBlobContent === 'image') { %>true)" accept="image/*" v-text="$t('entity.action.addimage')"<% } else { %>false)" v-text="$t('entity.action.addblob')"<% } %>/>
                         </div>
                         <%_ } _%>
                         <%_ if (fieldType === 'LocalDate') { _%>
                         <div class="input-group">
-                            <input id="<%= entityFileName %>-<%= fieldName %>" type="date" class="<%= fieldInputClass %>" name="<%= fieldName %>"  :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
+                            <input
+                                id="<%= entityFileName %>-<%= fieldName %>"
+                                type="date"
+                                class="<%= fieldInputClass %>"
+                                name="<%= fieldName %>"
+                                data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
+                                :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
                             v-model="$v.<%= entityInstance %>.<%= fieldName %>.$model" <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %> />
                         </div>
                         <%_ } else if (['Instant'].includes(fieldType)) { _%>
                         <div class="d-flex">
-                            <input id="<%= entityFileName %>-<%= fieldName %>" type="datetime-local" class="<%= fieldInputClass %>" name="<%= fieldName %>" :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
+                            <input
+                                id="<%= entityFileName %>-<%= fieldName %>"
+                                type="datetime-local"
+                                class="<%= fieldInputClass %>" name="<%= fieldName %>"
+                                data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
+                                :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
                             <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %>
                             :value="convertDateTimeFromServer($v.<%= entityInstance %>.<%= fieldName %>.$model)"
                             @change="updateInstantField('<%= fieldName %>', $event)"/>
                         </div>
                         <%_ } else if (['ZonedDateTime'].includes(fieldType)) { _%>
                         <div class="d-flex">
-                            <input id="<%= entityFileName %>-<%= fieldName %>" type="datetime-local" class="<%= fieldInputClass %>" name="<%= fieldName %>" :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
+                            <input
+                                id="<%= entityFileName %>-<%= fieldName %>"
+                                type="datetime-local" class="<%= fieldInputClass %>"
+                                name="<%= fieldName %>"
+                                data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
+                                :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }"
                             <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %>
                             :value="convertDateTimeFromServer($v.<%= entityInstance %>.<%= fieldName %>.$model)"
                             @change="updateZonedDateTimeField('<%= fieldName %>', $event)"/>
                         </div>
                         <%_ } else if (fieldTypeBlobContent === 'text') { _%>
-                        <textarea class="<%= fieldInputClass %>" name="<%= fieldName %>" id="<%= entityFileName %>-<%= fieldName %>"
+                        <textarea class="<%= fieldInputClass %>" name="<%= fieldName %>" id="<%= entityFileName %>-<%= fieldName %>" data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
                             :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }" v-model="$v.<%= entityInstance %>.<%= fieldName %>.$model" <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %>></textarea>
                         <%_ } else { _%>
-                        <input type="<%= fieldInputType %>" class="<%= fieldInputClass %>" name="<%= fieldName %>" id="<%= entityFileName %>-<%= fieldName %>"
+                        <input type="<%= fieldInputType %>" class="<%= fieldInputClass %>" name="<%= fieldName %>" id="<%= entityFileName %>-<%= fieldName %>" data-e2e-element="<%= entityFileName %>-<%= fieldName %>"
                             :class="{'valid': !$v.<%= entityInstance %>.<%= fieldName %>.$invalid, 'invalid': $v.<%= entityInstance %>.<%= fieldName %>.$invalid }" v-model<% if (fieldInputType === 'number') { %>.number<% } %>="$v.<%= entityInstance %>.<%= fieldName %>.$model" <% if (fields[idx].fieldValidate === true && fields[idx].fieldValidateRules.includes('required')) { %> required<% } %>/>
                             <%_ if (['byte[]', 'ByteBuffer'].includes(fieldType) && fieldTypeBlobContent !== 'text') { _%>
                         <input type="hidden" class="<%= fieldInputClass %>" name="<%= fieldName %>ContentType" id="<%= entityFileName %>-<%= fieldName %>ContentType"
@@ -228,7 +256,7 @@
                     <button type="button" id="cancel-save" class="btn btn-secondary" v-on:click="previousState()">
                         <font-awesome-icon icon="ban"></font-awesome-icon>&nbsp;<span v-text="$t('entity.action.cancel')">Cancel</span>
                     </button>
-                    <button type="submit" id="save-entity" :disabled="$v.<%= entityInstance %>.$invalid || isSaving" class="btn btn-primary">
+                    <button type="submit" id="save-entity" :disabled="$v.<%= entityInstance %>.$invalid || isSaving" class="btn btn-primary" data-e2e-element="save">
                         <font-awesome-icon icon="save"></font-awesome-icon>&nbsp;<span v-text="$t('entity.action.save')">Save</span>
                     </button>
                 </div>
