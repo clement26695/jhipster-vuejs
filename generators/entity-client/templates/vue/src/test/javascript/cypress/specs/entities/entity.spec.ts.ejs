@@ -31,6 +31,9 @@ import {
   <%= entityInstance%>EditPageSelector,
   <%= entityInstance%>EditSaveSelector,
   <%= entityInstance%>EditTitleSelector,
+<%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
+  <%= entityInstance%>SortIdSelector,
+<%_ } _%>
 <%_ for (idx in fields) {
   const fieldName = fields[idx].fieldName;
   const fieldNameCapitalized = fields[idx].fieldNameCapitalized;
@@ -46,15 +49,7 @@ import { datetimeToMinutes } from '../../support/utils';
 
 <%_
 const baseApi = (applicationType === 'gateway' && locals.microserviceName) ? microserviceName.toLowerCase() + '/api/' : 'api/';
-let openBlockComment = ``;
-let closeBlockComment = ``;
-for (let relationship of relationships) {
-    if (relationship.relationshipRequired) {
-        openBlockComment = `/*`;
-        closeBlockComment = `*/`;
-        break;
-    }
-} _%>
+_%>
 
 describe('<%= entityClass %> e2e test', () => {
   let startingEntitiesCount = 0;
@@ -63,9 +58,8 @@ describe('<%= entityClass %> e2e test', () => {
   beforeEach(function() {
     cy.logout();
     cy.loginWithAdmin().then(() => {
-      // TODO: to remove if possible
-      cy.wait(100);
       cy.visit('/entity/<%= entityFileName%>');
+      cy.wait('@accountRequest');
 
       // TODO: handle OAuth2
       cy.request({
@@ -122,7 +116,7 @@ describe('<%= entityClass %> e2e test', () => {
 <%_ } _%>
   });
 
-   <%= openBlockComment %>it('should create and save <%= entityClassPlural %>', function() {
+   it('should create and save <%= entityClassPlural %>', function() {
     cy.server();
     cy.route('POST', '/<%= baseApi + entityApiUrl %>').as('saveEntityRequest');
 
@@ -227,7 +221,7 @@ describe('<%= entityClass %> e2e test', () => {
       .then(entities => {
         expect(entities.length).to.equal(startingEntitiesCount + 1);
       });
-  });<%= closeBlockComment %>
+  });
 
   it('should load details <%= entityClass %> page and fetch data', function() {
     // TODO: fix request body
@@ -237,8 +231,9 @@ describe('<%= entityClass %> e2e test', () => {
     cy.reload();
 
     <%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
-    // TODO: fix pagination
-    getIdSortButton().click();
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>SortIdSelector)
+      .click();
     <%_ } _%>
     cy.get(<%= entityInstance%>PageSelector)
       .find(<%= entityInstance%>DetailsButtonSelector)
@@ -274,14 +269,15 @@ describe('<%= entityClass %> e2e test', () => {
   });
 
   it('should load edit <%= entityClass %> page and fetch data', function() {
-    // TODO: fix body
     cy.createEntity('<%= entityApiUrl %>', this.defaultEntityBody).then(response => {
       entityToDelete.push(response.body.id);
     });
     cy.reload();
 
     <%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
-    getIdSortButton().click();
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>SortIdSelector)
+      .click();
     <%_ } _%>
     cy.get(<%= entityInstance%>PageSelector)
       .find(<%= entityInstance%>EditButtonSelector)
@@ -356,15 +352,16 @@ describe('<%= entityClass %> e2e test', () => {
     cy.getInfoToast().should('exist');
   });
 
-  <%= openBlockComment %>it('should delete last <%= entityClass %>', function() {
-    // TODO: fix body
+  it('should delete last <%= entityClass %>', function() {
     cy.createEntity('<%= entityApiUrl %>', this.defaultEntityBody).then(response => {
       entityToDelete.push(response.body.id);
     });
     cy.reload();
 
     <%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
-    getIdSortButton().click();
+    cy.get(<%= entityInstance%>PageSelector)
+      .find(<%= entityInstance%>SortIdSelector)
+      .click();
     <%_ } _%>
     cy.get(<%= entityInstance%>PageSelector)
       .find(<%= entityInstance%>DeleteButtonSelector)
@@ -399,7 +396,7 @@ describe('<%= entityClass %> e2e test', () => {
 
     // Danger toast should appear
     cy.getDangerToast().should('exist');
-  });<%= closeBlockComment %>
+  });
 
   afterEach(() => {
     cy.cleanEntity('<%= entityApiUrl %>', entityToDelete);

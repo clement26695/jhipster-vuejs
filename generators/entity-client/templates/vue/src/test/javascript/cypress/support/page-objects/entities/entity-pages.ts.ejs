@@ -4,6 +4,9 @@ export const <%= entityInstance %>CreateSelector = '[data-e2e-element=create-ent
 export const <%= entityInstance %>DeleteButtonSelector = '[data-e2e-element=delete-button]';
 export const <%= entityInstance %>DetailsButtonSelector = '[data-e2e-element=details-button]';
 export const <%= entityInstance %>EditButtonSelector = '[data-e2e-element=edit-button]';
+<%_ if (pagination !== 'no' && pagination !== 'infinite-scroll') { _%>
+export const <%= entityInstance%>SortIdSelector = '[data-e2e-element=sort-id]';
+<%_ } _%>
 
 // Edit
 export const <%= entityInstance %>EditPageSelector = '[data-e2e-container=<%= entityFileName %>-edit-page]';

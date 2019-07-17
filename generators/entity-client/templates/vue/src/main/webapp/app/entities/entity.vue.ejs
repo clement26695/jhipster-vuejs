@@ -47,7 +47,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th<% if (pagination !== 'no') { %> v-on:click="changeOrder('id')"<% } %>><span v-text="$t('global.field.id')">ID</span><% if (pagination !== 'no') { %> <font-awesome-icon icon="sort"></font-awesome-icon><% } %></th>
+                    <th<% if (pagination !== 'no') { %> v-on:click="changeOrder('id')" data-e2e-element="sort-id"<% } %>><span v-text="$t('global.field.id')">ID</span><% if (pagination !== 'no') { %> <font-awesome-icon icon="sort"></font-awesome-icon><% } %></th>
                     <%_ for (idx in fields) { _%>
                     <th<% if (pagination !== 'no') { %> v-on:click="changeOrder('<%= fields[idx].fieldName%>')"<% } %>><span v-text="$t('<%=`${i18nKeyPrefix}.${fields[idx].fieldName}` %>')"><%= fields[idx].fieldNameHumanized %></span><% if (pagination !== 'no') { %> <font-awesome-icon icon="sort"></font-awesome-icon><% } %></th>
                     <%_ } _%>
