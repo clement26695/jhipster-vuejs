@@ -15,6 +15,6 @@ Cypress.Cookies.defaults({
 <%_ } else if (authenticationType === 'session') { _%>
 
 Cypress.Cookies.defaults({
-  whitelist: ['JSESSIONID', 'XSRF-TOKEN']
+  whitelist: ['XSRF-TOKEN']
 });
 <%_ } // TODO: add for uaa _%>

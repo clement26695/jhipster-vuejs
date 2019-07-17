@@ -19,7 +19,7 @@ limitations under the License.
 <%_
 const baseApi = (applicationType === 'gateway' && locals.microserviceName) ? microserviceName.toLowerCase() + '/api/' : 'api/';
 _%>
-<%_ if (authenticationType !== 'oauth2') { _%>
+<%_ if (authenticationType === 'jwt') { _%>
 Cypress.Commands.add('loginUsing', (username: string, password: string) => {
   cy.server();
   cy.route('GET', '/<%= baseApi %>account').as('accountRequest');
@@ -41,22 +41,64 @@ Cypress.Commands.add('loginUsing', (username: string, password: string) => {
       }
     });
 });
-<%_ } else { _%>
-  // TODO: add for OAuth2
-<%_ } _%>
+<%_ } else if (authenticationType === 'session') { _%>
+Cypress.Commands.add('loginUsing', (username: string, password: string) => {
+  cy.server();
+  cy.route('GET', '/<%= baseApi %>account').as('accountRequest');
+
+  return cy.getXsrfToken().then((cookie: any) => {
+    cy
+    .request({
+      method: 'POST',
+      url: '/<%= baseApi %>authentication',
+      body: {
+        username,
+        password
+      },
+      form: true,
+      headers: {
+        'X-XSRF-TOKEN': cookie.value
+      }
+    })
+    .then((result: any) => {
+      const bearerToken = result.headers.authorization;
+      if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {
+        window.sessionStorage.setItem('jhi-authenticationToken', bearerToken.slice(7, bearerToken.length));
+      }
+    });
+  });
+});
+<%_ } /* TODO: add for OAuth2 */ _%>
 
 Cypress.Commands.add('loginWithAdmin', () => {
   return cy.loginUsing('admin', 'admin');
 });
 
-<%_ if (authenticationType !== 'oauth2') { _%>
+<%_ if (authenticationType === 'jwt') { _%>
 Cypress.Commands.add('logout', () => {
   window.sessionStorage.removeItem('jhi-authenticationToken');
   window.localStorage.removeItem('jhi-authenticationToken');
 });
-<%_ } else { _%>
-  // TODO: add for OAuth2
-<%_ } _%>
+<%_ } else if (authenticationType === 'session') { _%>
+Cypress.Commands.add('logout', () => {
+  cy.clearCookie('JSESSIONID');
+});
+
+Cypress.Commands.add('getXsrfToken', () => {
+  return cy.getCookie('XSRF-TOKEN').then(cookieApp => {
+    if (cookieApp === null) {
+      cy.visit('/');
+
+      cy.getCookie('XSRF-TOKEN').then(cookieApp2 => {
+        return cookieApp2;
+      });
+    } else {
+      return cookieApp;
+    }
+  })
+});
+
+<%_ } /* TODO: add for OAuth2 */ _%>
 
 declare global {
   namespace Cypress {
@@ -64,6 +106,7 @@ declare global {
       logout(): void;
       loginUsing(username: string, password: string): Cypress.Chainable;
       loginWithAdmin(): Cypress.Chainable;
+      getXsrfToken(): Cypress.Chainable<Cookie | null>;
     }
   }
 }

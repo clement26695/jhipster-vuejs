@@ -142,7 +142,7 @@
                         <span v-text="$t('global.menu.account.login')">Sign in</span>
                     </b-dropdown-item>
                     <%_ if (authenticationType !== 'oauth2') { _%>
-                    <b-dropdown-item to="/register" tag="b-dropdown-item" id="register" v-if="!authenticated">
+                    <b-dropdown-item to="/register" tag="b-dropdown-item" id="register" v-if="!authenticated" data-e2e-element="register">
                         <font-awesome-icon icon="user-plus" />
                         <span v-text="$t('global.menu.account.register')">Register</span>
                     </b-dropdown-item>

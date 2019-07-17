@@ -32,7 +32,12 @@ describe('Register', () => {
     cy.cleanUsers();
     // TODO: Move logout to support ? It would run before each test
     cy.logout();
+    <%_ if (authenticationType !== 'session') { _%>
     cy.visit('/register');
+    <%_ } else { _%>
+    cy.visit('/');
+    cy.clickOnRegisterItem();
+    <%_ } _%>
   });
 
   it('should display register page', () => {
