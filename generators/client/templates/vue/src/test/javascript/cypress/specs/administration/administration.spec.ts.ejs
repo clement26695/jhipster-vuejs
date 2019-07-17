@@ -12,6 +12,7 @@ describe('Administration', () => {
     cy.logout();
     cy.loginWithAdmin();
     cy.visit('/');
+    cy.wait('@accountRequest');
   });
 
   it('should list administration items', () => {

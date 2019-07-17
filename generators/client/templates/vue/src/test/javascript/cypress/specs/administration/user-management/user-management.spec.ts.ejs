@@ -29,6 +29,7 @@ describe('User Management', () => {
     cy.logout();
     cy.loginWithAdmin();
     cy.visit('/admin/user-management');
+    cy.wait('@accountRequest');
   });
 
   it('should be able to activate deactivated user', () => {

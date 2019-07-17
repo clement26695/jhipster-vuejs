@@ -32,6 +32,7 @@ describe('User Edit', () => {
     cy.loginWithAdmin();
     cy.registerUserUsing('user-edit-details', 'user-edit-details@localhost.jh', 'user-edit-details');
     cy.visit('/admin/user-management');
+    cy.wait('@accountRequest');
   });
 
   it('should edit details from user', () => {

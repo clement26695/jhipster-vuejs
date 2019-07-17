@@ -21,6 +21,9 @@ const baseApi = (applicationType === 'gateway' && locals.microserviceName) ? mic
 _%>
 <%_ if (authenticationType !== 'oauth2') { _%>
 Cypress.Commands.add('loginUsing', (username: string, password: string) => {
+  cy.server();
+  cy.route('GET', '/<%= baseApi %>account').as('accountRequest');
+
   return cy
     .request({
       method: 'POST',

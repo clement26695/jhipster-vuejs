@@ -43,6 +43,7 @@ describe('User settings page', () => {
     );
     cy.loginUsing('user-change-settings', 'user-change-settings');
     cy.visit('/account/settings');
+    cy.wait('@accountRequest');
 
     // WHEN
     cy.get(settingsPageSelector)
@@ -73,6 +74,7 @@ describe('User settings page', () => {
     cy.registerUserUsing('user-fail-change-settings2', 'user-fail-change-settings2@localhost.jh', 'user-fail-change-settings2');
     cy.loginUsing('user-fail-change-settings1', 'user-fail-change-settings1');
     cy.visit('/account/settings');
+    cy.wait('@accountRequest');
 
     // WHEN
     cy.get(settingsPageSelector)

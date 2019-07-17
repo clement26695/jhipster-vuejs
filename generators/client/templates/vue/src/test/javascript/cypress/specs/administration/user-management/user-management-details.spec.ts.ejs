@@ -30,6 +30,7 @@ describe('User Details', () => {
     cy.loginWithAdmin();
     cy.registerUserUsing('user-details', 'user-details@localhost.jh', 'user-details');
     cy.visit('/admin/user-management');
+    cy.wait('@accountRequest');
   });
 
   it('should preview details from user', () => {
