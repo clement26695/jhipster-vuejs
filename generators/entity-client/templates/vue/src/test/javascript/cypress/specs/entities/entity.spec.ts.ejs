@@ -112,7 +112,7 @@ describe('<%= entityClass %> e2e test', () => {
       .invoke('attr', 'id')
       .should('match', /<%= i18nKeyPrefix %>.home.createOrEditLabel/);
 <%_ } else { _%>
-      .shouldTextBe('Create or edit a <%= entityAngularName %>');
+      .contains('Create or edit a <%= entityAngularName %>');
 <%_ } _%>
   });
 
