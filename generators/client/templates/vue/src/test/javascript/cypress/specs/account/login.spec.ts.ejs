@@ -22,8 +22,8 @@ const loginWith = (username: string, password: string) => {
     .find(loginSubmitSelector)
     .click();
 <%_ } else {_%>
-  cy.get('#username').type('admin');
-  cy.get('#password').type('foo');
+  cy.get('#username').type(username);
+  cy.get('#password').type(password);
   cy.get('input[type=submit]').click();
 <%_ } _%>
 };
@@ -61,13 +61,14 @@ describe('Log In', () => {
       .should('have.class', 'alert-danger');
 <%_ } else {_%>
     cy.get('.alert-error').then($alert => {
-    if ($alert.length) {
-      // Keycloak
-      expect($alert.get(0).innerText).to.equal('Invalid username or password.');
-    } else {
-      // Okta
-      cy.get('.infobox-error').invoke('text').should('equal', 'Sign in failed!');
-    }
+      if ($alert.length) {
+        // Keycloak
+        expect($alert.get(0).innerText).to.equal('Invalid username or password.');
+      } else {
+        // Okta
+        cy.get('.infobox-error').invoke('text').should('equal', 'Sign in failed!');
+      }
+    });
 <%_ } _%>
   });
 
