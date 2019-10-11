@@ -44,6 +44,9 @@ _%>
   <%= entityInstance%>TitleSelector
 } from '../../support/page-objects/entities/<%= entityFileName%>-pages';
 
+// TODO: conditionnal adding
+import { datetimeToMinutes } from '../../support/utils';
+
 <%_
 const baseApi = (applicationType === 'gateway' && locals.microserviceName) ? microserviceName.toLowerCase() + '/api/' : 'api/';
 
