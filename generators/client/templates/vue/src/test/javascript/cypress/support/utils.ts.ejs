@@ -22,20 +22,16 @@ Cypress.Commands.add(
   {
     prevSubject: true
   },
-  (subject: any, text: string) => {
-    return cy
+  (subject: any, text: string) =>
+    cy
       .wrap(subject)
       .invoke('text')
-      .should('eq', text);
-  }
+      .should('eq', text)
 );
 
-Cypress.Commands.add('getSuccessToast', () => cy.get('div[role=alert].alert.alert-success'));
-Cypress.Commands.add('getInfoToast', () => cy.get('div[role=alert].alert.alert-info'));
-Cypress.Commands.add('getDangerToast', () => cy.get('div[role=alert].alert.alert-danger'));
-
-// Fix timezone
-export const datetimeToMinutes = (datetime: string) => new Date(datetime).valueOf() / 60000;
+Cypress.Commands.add('getSuccessToast', () => cy.get('[role=alert].alert.alert-success'));
+Cypress.Commands.add('getInfoToast', () => cy.get('[role=alert].alert.alert-info'));
+Cypress.Commands.add('getDangerToast', () => cy.get('[role=alert].alert.alert-danger'));
 
 declare global {
   namespace Cypress {
